@@ -4,7 +4,6 @@ import copy
 def matrix(row: int, col: int) -> list[list[int]]:
     return [[0] * col for _ in range(row)]
 
-
 reset = '\033[0m'
 bg_white = '\033[38;2;255;255;255m'
 bg_black = '\033[38;2;0;0;0m'
