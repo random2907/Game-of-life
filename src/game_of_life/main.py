@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtWidgets, QtGui
-from game_of_life.util import next_Gen, Cell, Set
+from game_of_life.util import next_Gen, Cell, Set, simple_rle_decode
 import sys
 
 class GameOfLifeWidget(QtWidgets.QWidget):
@@ -72,6 +72,10 @@ class MyWidget(QtWidgets.QWidget):
         self.mylayout = QtWidgets.QVBoxLayout()
         self.setLayout(self.mylayout)
 
+        self.open_button = QtWidgets.QPushButton("Open RLE File")
+        self.open_button.clicked.connect(self.open_rle_file)
+        self.mylayout.addWidget(self.open_button)
+
         self.scroll_layout = QtWidgets.QScrollArea()
 
         self.game_widget = GameOfLifeWidget(
@@ -124,6 +128,17 @@ class MyWidget(QtWidgets.QWidget):
     def step(self):
         self.live_cells = next_Gen(self.live_cells)
         self.game_widget.set_live_cells(self.live_cells)
+
+    def open_rle_file(self):
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Open RLE file", "", "RLE files (*.rle)")
+        if filename:
+            with open(filename, 'r') as f:
+                rle_data = f.read()
+            self.live_cells = simple_rle_decode(rle_data)
+            self.game_widget.set_live_cells(self.live_cells)
+
+            # Refresh
+            self.game_widget.update()
 
 def main():
     app = QtWidgets.QApplication([])
